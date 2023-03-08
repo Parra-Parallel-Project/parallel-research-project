@@ -1,9 +1,7 @@
-#include "WeightedGraph.h"
-
 #include<iostream>
 #include<Vector>
 #include<List>
-#include<bits/stdc++.h>
+#include "WeightedGraph.h"
 
 using namespace std;
 
