@@ -1,7 +1,6 @@
 #include<iostream>
 #include<Vector>
 #include<List>
-#include<bits/stdc++.h>
 
 using namespace std;
 
