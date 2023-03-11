@@ -17,7 +17,7 @@ The outcome of this project is to provide an analysis of _Least-Cost Path Algori
 
 A cost distance analysis is used to find the shortest route from one point to another, there are numerous algorithms which have been developed for this such as A\* and Dijkstra's algorithm. These algorithms find the shortest distance between two points through different methods, this can be applied to not just two points but also nodes on a graph as well.
 
-These algorithms take a source ocation and a destination and evaluate their possible paths until a best route is found. This could take a short or a long time depending on how big the distance/graph is, or how the algorithm looks for this best route. For example, some algorithms try to predict the best route as it goes while others try every possible combination until they find the shortest route.
+These algorithms take a source location and a destination and evaluate their possible paths until a best route is found. This could take a short or a long time depending on how big the distance/graph is, or how the algorithm looks for this best route. For example, some algorithms try to predict the best route as it goes while others try every possible combination until they find the shortest route.
 
 Graph search has a lot of applications for math, on this project we will be focusing on the _Least-Cost Path Algorithms_ for graphs in a two dimensional space and understand how their performance is affected by more threads and more nodes.
 
