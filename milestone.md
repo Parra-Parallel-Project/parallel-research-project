@@ -1,0 +1,67 @@
+## Abstract - Analysis of Parallel A\* and Other Least-Cost Path Algorithms
+
+> Thomas Harmeyer, Ethan Woollet, Robert Bereiter, Tiuna Benito, Kieran Jimenez
+
+> UCF Spring 2023
+> COP4520 - Concepts of Parallel and Distributed Processing
+
+COP4520 is a class that focuses on parallel and distributed paradigms, as well as the tools needed to support them. The purpose of such paradigms is generally to improve the speed of a system, but supporting them requires an additional level of complexity compared to sequential programming. This is caused by the need to communicate between threads and maintain accurate shared memory. Due to the importance of knowing the best tool for a given task, our team has decided to analyze and compare four algorithms with sequential and parallel implementations.
+
+For this project our team has decided to focus on _Least-Cost Path Algorithms_ due to their broad and adaptable nature, and the versatility of _weighted graphs_ to abstractly represent real world problems. We will test single thread implementations and varying levels of multi-thread implementations on multiple graphs of differing sizes. Then, we will perform an _empirical runtime analysis_ on the performances of the different implementations to determine the optimal number of threads to manage for each algorithm.
+
+It is the hope of our team that such research will help inform future programmers which implementation will ensure maximum efficiency depending on the graph size expected.
+
+## Overview
+
+The outcome of this project is to provide an analysis of _Least-Cost Path Algorithms_ and how they behave when applied with parallelization. To illustrate this we first need to look at Least-Cost Path Algorithms and understand how they work and what parallelization does in regards to speed.
+
+A cost distance analysis is used to find the shortest route from one point to another, there are numerous algorithms which have been developed for this such as A\* and Dijkstra's algorithm. These algorithms find the shortest distance between two points through different methods, this can be applied to not just two points but also nodes on a graph as well.
+
+These algorithms take a source ocation and a destination and evaluate their possible paths until a best route is found. This could take a short or a long time depending on how big the distance/graph is, or how the algorithm looks for this best route. For example, some algorithms try to predict the best route as it goes while others try every possible combination until they find the shortest route.
+
+Graph search has a lot of applications for math, on this project we will be focusing on the _Least-Cost Path Algorithms_ for graphs in a two dimensional space and understand how their performance is affected by more threads and more nodes.
+
+## Procedure
+
+For this project, the primary goal is to of course attempt to clearly identify under what circumstances the different algorithms are preferable. To do this, our method will be to vary those circumstances and take measurements of the results for further analysis.
+
+Specifically, the axes of variance we will be measuring on are:
+
+- The algorithms
+- Single thread vs Multi thread
+  - For multi thread: 1, 2, 4, 8 threads
+- Size of graphs in nodes
+  - 10, 50, 100, 1000 nodes
+- Different CPUs (maybe)
+
+We will use all of these different points of comparison in our analysis to determine if there is a good rule of thumb, or objective solution to this type of problem.
+
+In terms of single thread versus multi thread, it is important to point out that the single threaded algorithm is the classical algorithms being discussed without any consideration for multithreading or the concurrent overhead it would require. This is also why we will be testing with single thread on the basic algorithms and comparing to the multithreaded algorithms using a single thread, as it will give a baseline comparison to those overhead costs for these algorithms.
+
+Another important discussion point is how we will generate said graphs for testing. Because these are simply weighted graphs, writing a class to support that is quite simple, and it is our intention to treat the graphs as being read-only, which means that no changes need to be made in regard to the parallelized algorithms.
+
+As for generating these graphs and testing the algorithms, we are organizing our solutions into classes using a common interface and calling those solutions from a runner file. Said runner file will also be responsible for generating the graphs randomly and performing the measurements on the solutions' runtimes. As for correctness of solutions, we have not yet discussed how, or even if we will verify correctness of solutions. It is an important consideration, but one lower than performance at this time.
+
+One last topic of note is the CPU(s) used in testing. We will of course indicate what CPU is used to perform the tests, but it may also be that we end up running the test on multiple computers and averaging the results for final analysis, or even including it as a separate axes for comparison. As of yet, this has not been discussed fully, but it will not likely be a major factor in the final results.
+
+## Analysis
+
+The data we will generate from our tests will be formatted into a CSV or other delimited format, then used by a python script utilizing the Pandas, Numpy, and MatPlotLib packages for ease of analysis.
+
+The data will also include scatter plots for the algorithms' performances as the results of the algorithms will be measured over a hundred graphs per 'version' to account for natural variance of performance. Overall, it will be relatively simple, but with many possible comparisons to be made within and across the different algorithms.
+
+## The Algorithms
+
+This study focuses on analyzing four Least-Cost Path Algorithms, A\*, BFS, DFS, and Dijkstra, in both single-threaded and multi-threaded implementations on varying graph sizes. The aim is to determine the optimal number of threads for each algorithm and to understand their behavior with parallelization.
+
+- A\* is a popular algorithm used in graph theory to find the shortest path between two nodes in a graph. It combines the strengths of Dijkstra's algorithm and breadth-first search to find the optimal solution efficiently. A\* uses a heuristic function to estimate the cost of reaching the goal from a given node, allowing it to prioritize exploring promising paths over others.
+
+- BFS, or breadth-first search, is a graph traversal algorithm that visits all the vertices of a graph in breadth-first order. This means that it visits all the vertices at a given depth level before moving on to the next level. BFS is used to find the shortest path between two nodes in an unweighted graph, as well as to solve many other graph-related problems.
+
+- DFS, or depth-first search, is another graph traversal algorithm that visits vertices in a depth-first manner. This means that it visits a vertex and then explores all its neighbors before moving on to the next vertex. DFS is used to find cycles and paths in a graph, and to solve many other graph-related problems.
+
+- Dijkstra's algorithm is a popular algorithm used to find the shortest path between two nodes in a graph with non-negative edge weights. It works by maintaining a priority queue of vertices and visiting them in order of increasing distance from the source node. Dijkstra's algorithm is guaranteed to find the optimal solution and is widely used in many applications.
+
+## Conclusion
+
+In conclusion, our team will be analyzing four different algorithms for finding the least-cost path in a graph: A\*, BFS, DFS, and Dijkstra. The algorithms will be implemented both in single-threaded and multi-threaded versions, and will be tested on different graph sizes to determine the optimal number of threads for each algorithm. The results of the tests will be analyzed using Python's Pandas, Numpy, and MatPlotLib packages.
