@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <string>
 #include <chrono>
+#include <fstream>
 
 #include "WeightedGraph.h"
 
@@ -49,7 +50,7 @@ problem generateNewProblem(int n); // generates a new graph with guaranteed path
 void printEdgesPerProblem(vector<vector<problem>> arr); // debug print
 arr2d testUnthreaded(int alg, vector<vector<problem>> graphs); // performs test for one unthreaded  algorithm and measures the times
 arr2d testThreaded(int alg, int threadCount, vector<vector<problem>> graphs); // performs test for one threaded algorithm and measures the times across different threadcounts
-void unthreadedToCSV(int alg);
+string toCSVString(int alg, int threadCount, arr2d times, int h, int w);
 void prettyPrint2d(arr2d arr, int height, int width);
 
 
@@ -79,19 +80,53 @@ int main() {
     // printEdgesPerProblem(allProblems); // DEBUG
     arr2d times;
 
-    for(int alg = 0; alg < 4; alg++) { // do each algorithm type independently
+    ofstream fp("times.csv");
+
+    // string csvString = "";
+    // cout << "Max String Size: " << csvString.max_size() << "\n";
+
+    for(int alg = 0; alg < nAlgs; alg++) { // do each algorithm type independently
 
         times = testUnthreaded(alg, allProblems); // unthreaded 
-        prettyPrint2d(times, n_groups, n_graphs);
+        // prettyPrint2d(times, n_groups, n_graphs);
+        fp << toCSVString(alg, 0, times, n_groups, n_graphs);
 
         for(int t = 0; t < n_thread_groups; t++) { // threaded
 
             times = testThreaded(alg, thread_groups[t], allProblems);
-            prettyPrint2d(times, n_groups, n_graphs);
+            fp << toCSVString(alg, thread_groups[t], times, n_groups, n_graphs);
+            // prettyPrint2d(times, n_groups, n_graphs);
         }
     }
 
+    fp.close();
 
+}
+
+
+string toCSVString(int alg, int threadCount, arr2d times, int h, int w) {
+
+    string csv = "";
+    for(int i = 0; i < h; i++) {
+        for(int j = 0; j < w; j++) {
+            
+            string row = "";
+
+            /*
+                format:
+                alg_name,n_threads,n_nodes,time_in_ms
+            */
+
+            row += algNames[alg] + ",";
+            row += to_string(threadCount) + ",";
+            row += to_string(groups[h]) + ",";
+            row += to_string(times.a[i][j]) + "\n";
+
+            csv += row;
+        }
+    }
+
+    return csv;
 }
 
 
