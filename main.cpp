@@ -78,6 +78,7 @@ int main() {
     arr2d times;
 
     ofstream fp("times.csv");
+    fp << "alg_name,n_threads,n_nodes,time_in_ms\n"; // header for CSV
 
     for(int alg = 0; alg < nAlgs; alg++) { // do each algorithm type independently
 
@@ -101,7 +102,11 @@ int main() {
 // generates a string in CSV format from the given times and metadata
 string toCSVString(int alg, int threadCount, arr2d times, int h, int w) {
 
+
     string csv = "";
+
+    
+
     for(int i = 0; i < h; i++) {
         for(int j = 0; j < w; j++) {
             
@@ -114,7 +119,7 @@ string toCSVString(int alg, int threadCount, arr2d times, int h, int w) {
 
             row += algNames[alg] + ",";
             row += to_string(threadCount) + ",";
-            row += to_string(groups[h]) + ",";
+            row += to_string(groups[i]) + ",";
             row += to_string(times.a[i][j]) + "\n";
 
             csv += row;
