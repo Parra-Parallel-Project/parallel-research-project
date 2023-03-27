@@ -36,6 +36,9 @@ int WeightedGraph::getnEdges() {
     return n_edges;
 }
 
+int WeightedGraph::getnNodes() {
+    return n_nodes;
+}
 
 list<edge>* WeightedGraph::getEdges(int node) {
 
