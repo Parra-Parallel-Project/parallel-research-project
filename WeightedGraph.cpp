@@ -16,6 +16,7 @@ WeightedGraph::WeightedGraph(int n){
 
 void WeightedGraph::addEdge(int src, int dest, int weight) {
     
+    if(src == dest) return; // no self loops.
     
     for (std::list<edge>::iterator it = adj[src].begin(); it != adj[src].end(); ++it) {
 
@@ -29,6 +30,10 @@ void WeightedGraph::addEdge(int src, int dest, int weight) {
     adj[dest].push_back(edge(src, weight));
 
     n_edges++;
+}
+
+int WeightedGraph::getnEdges() {
+    return n_edges;
 }
 
 

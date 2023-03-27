@@ -22,5 +22,6 @@ class WeightedGraph {
 
         void addEdge(int src, int dest, int weight);
         list<edge>* getEdges(int node);
+        int getnEdges();
         void prettyPrint();
 };
