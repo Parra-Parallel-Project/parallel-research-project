@@ -31,6 +31,10 @@ void WeightedGraph::addEdge(int src, int dest, int weight) {
     n_edges++;
 }
 
+//TODO create a randomGraph method that takes in {number of nodes to create, upper edge weight limit} and returns a randomized graph
+	//needs some way to validate a path exists from node 0 to node n-1 OR write algorithms to report if no path is possible
+	//maybe BFS search from end node to start node and start randomly adding edges until BFS search finds a path to start?
+
 
 list<edge>* WeightedGraph::getEdges(int node) {
 

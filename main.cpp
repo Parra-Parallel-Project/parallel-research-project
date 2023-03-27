@@ -3,7 +3,7 @@
 
 using namespace std;
 
-int main() {
+int main() {//TODO add arguments to decide which algorithm to use, thread count (1, 2, 4, 8) and graph size (10, 50, 100, 1000)
     cout << "---- | Runner Output: | ----\n\n";
 
     WeightedGraph g = WeightedGraph(5);
@@ -26,5 +26,12 @@ int main() {
 
     g.prettyPrint();
 
-    
+	//loop 100 times
+		//create random graph (g.randomGraph(graphSize, maxEdgeWeight))
+		//start timer
+		//call algorithm
+		//end timer
+		//input time and result to results array
+
+	//print time and result{boolean for DFS/BFS, path distance for A*/Dijkstra}, to a text file if that is easier to move to CSV for analysis, use main args to determine file name
 }
