@@ -16,10 +16,9 @@ using namespace std::chrono;
 #define MAX_WEIGHT 10
 
 // Used to test algorithms: (start, end, graph)
-typedef tuple<int, int, WeightedGraph> problem;
 
 
-// globals
+// global variables that affect testing
 
 // per unthreaded alg 
 static const int n_graphs = 10; // number of test problems per group
@@ -35,28 +34,26 @@ static const int nAlgs = 4;
 static const string algNames[nAlgs] = {"Depth_First_Search", "Breadth_First_Search", "Dijkstra", "A_Star"};
 
 
-// for returning arrays from a fnc
-struct arr2d { 
+// Structs
+struct arr2d { // a wrapper object to pass 2d arrays more easily
     int a[n_groups][n_graphs];
 };
 
-struct arr3d {
-    int a[n_thread_groups][n_groups][n_graphs];
-};
+typedef tuple<int, int, WeightedGraph> problem; // an object to store a graph and its guaranteed nodes to be connected
 
 
-// Helper functions
-problem generateNewProblem(int n); // generates a new graph with guaranteed path between start and stop nodes
-void printEdgesPerProblem(vector<vector<problem>> arr); // debug print
-arr2d testUnthreaded(int alg, vector<vector<problem>> graphs); // performs test for one unthreaded  algorithm and measures the times
-arr2d testThreaded(int alg, int threadCount, vector<vector<problem>> graphs); // performs test for one threaded algorithm and measures the times across different threadcounts
+// Helper function prototypes
+problem generateNewProblem(int n);
+void printEdgesPerProblem(vector<vector<problem>> arr);
+arr2d testUnthreaded(int alg, vector<vector<problem>> graphs);
+arr2d testThreaded(int alg, int threadCount, vector<vector<problem>> graphs);
 string toCSVString(int alg, int threadCount, arr2d times, int h, int w);
 void prettyPrint2d(arr2d arr, int height, int width);
 
 
 int main() {
 
-    cout << "---- | Runner Output: | ----\n\n";
+    cout << "\n---- | Runner Output: | ----\n\n";
 
     // srand(0);
     srand (time(NULL));
@@ -82,28 +79,26 @@ int main() {
 
     ofstream fp("times.csv");
 
-    // string csvString = "";
-    // cout << "Max String Size: " << csvString.max_size() << "\n";
-
     for(int alg = 0; alg < nAlgs; alg++) { // do each algorithm type independently
 
         times = testUnthreaded(alg, allProblems); // unthreaded 
-        // prettyPrint2d(times, n_groups, n_graphs);
+        // prettyPrint2d(times, n_groups, n_graphs); // DEBUG
         fp << toCSVString(alg, 0, times, n_groups, n_graphs);
 
         for(int t = 0; t < n_thread_groups; t++) { // threaded
 
             times = testThreaded(alg, thread_groups[t], allProblems);
+            // prettyPrint2d(times, n_groups, n_graphs); // DEBUG
             fp << toCSVString(alg, thread_groups[t], times, n_groups, n_graphs);
-            // prettyPrint2d(times, n_groups, n_graphs);
         }
     }
 
     fp.close();
 
+    cout << "\n---- | End of Output | ----\n\n";
 }
 
-
+// generates a string in CSV format from the given times and metadata
 string toCSVString(int alg, int threadCount, arr2d times, int h, int w) {
 
     string csv = "";
@@ -129,7 +124,7 @@ string toCSVString(int alg, int threadCount, arr2d times, int h, int w) {
     return csv;
 }
 
-
+// generates a graph with a guaranteed path b/w the start and stop nodes, and stores all of that in a problem struct
 problem generateNewProblem(int n) {
     
     WeightedGraph g = WeightedGraph(n);
@@ -178,10 +173,10 @@ problem generateNewProblem(int n) {
     return problem(start, stop, g);
 }
 
-
+// measures and stores the times to solve all problems by an unthreaded algorithm
 arr2d testUnthreaded(int alg, vector<vector<problem>> graphs) {
 
-    cout << "\nRunning tests for unthreaded " << algNames[alg] << "\n";
+    cout << "Running tests for unthreaded " << algNames[alg] << "\n";
     
     arr2d times; // times for unthreaded solutions
 
@@ -232,10 +227,10 @@ arr2d testUnthreaded(int alg, vector<vector<problem>> graphs) {
     return times;
 }
 
-
+// measures and stores the times to solve all problems by a threaded algorithm
 arr2d testThreaded(int alg, int threadCount, vector<vector<problem>> graphs) {
 
-    cout << "\nRunning tests for threaded " << algNames[alg] << " using " << threadCount << " threads\n";
+    cout << "Running tests for threaded " << algNames[alg] << " using " << threadCount << " threads\n";
     
     arr2d times; // times for threaded solutions
 
@@ -286,7 +281,7 @@ arr2d testThreaded(int alg, int threadCount, vector<vector<problem>> graphs) {
     return times;
 }
 
-
+// print out info about each generated problem in the array 
 void printEdgesPerProblem(vector<vector<problem>> arr) {
 
     for(auto group : arr) {
@@ -299,7 +294,7 @@ void printEdgesPerProblem(vector<vector<problem>> arr) {
     }
 }
 
-
+// Print a 2d array struct in a standard grid shape
 void prettyPrint2d(arr2d arr, int height, int width) {
 
     for(int i = 0; i < height; i++) {
