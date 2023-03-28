@@ -19,11 +19,9 @@
 
 class DFS {
 
-    static WeightedGraph graph;
-
-    static void threadedDFSWorker(int id, vector<bool>& visited, stack<int>& s, mutex& mtx, condition_variable& cv, atomic<bool>& done);
+    static void threadedDFSWorker(int id, int stop, WeightedGraph& graph, vector<bool>& visited, stack<int>& s, mutex& mtx, condition_variable& cv, atomic<bool>& done);
 
     public:
         static void unthreadedDFS(int start,int stop, WeightedGraph& graph);
-        static void threadedDFS(int start, int stop, WeightedGraph& g, int threadCount);
+        static void threadedDFS(int start, int stop, WeightedGraph& graph, int threadCount);
 };

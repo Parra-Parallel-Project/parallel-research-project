@@ -18,7 +18,6 @@
 #include "WeightedGraph.h"
 #endif
 
-WeightedGraph DFS::graph = WeightedGraph(0);
 
 void DFS::unthreadedDFS(int start,int stop, WeightedGraph& g) {
     vector<bool> visited(g.getnNodes(), false);
@@ -42,7 +41,7 @@ void DFS::unthreadedDFS(int start,int stop, WeightedGraph& g) {
 }
 
 
-void DFS::threadedDFSWorker(int id, vector<bool>& visited, stack<int>& s, mutex& mtx, condition_variable& cv, atomic<bool>& done) {
+void DFS::threadedDFSWorker(int id, int stop, WeightedGraph& graph, vector<bool>& visited, stack<int>& s, mutex& mtx, condition_variable& cv, atomic<bool>& done) {
     unique_lock<mutex> lock(mtx, defer_lock);
 
     while (true) {
@@ -62,6 +61,12 @@ void DFS::threadedDFSWorker(int id, vector<bool>& visited, stack<int>& s, mutex&
         if (!visited[curr]) {
             visited[curr] = true;
 
+            if (curr == stop) {
+                done = true;
+                cv.notify_all();
+                break;
+            }
+
             lock.lock();
             for (const auto& e : *graph.getEdges(curr)) {
                 if (!visited[e.second]) {
@@ -75,8 +80,7 @@ void DFS::threadedDFSWorker(int id, vector<bool>& visited, stack<int>& s, mutex&
 }
 
 
-void DFS::threadedDFS(int start, int stop, WeightedGraph& g, int threadCount) {
-    graph = g;
+void DFS::threadedDFS(int start, int stop, WeightedGraph& graph, int threadCount) {
     vector<bool> visited(graph.getnNodes(), false);
     stack<int> s;
     s.push(start);
@@ -85,14 +89,16 @@ void DFS::threadedDFS(int start, int stop, WeightedGraph& g, int threadCount) {
     condition_variable cv;
     atomic<bool> done(false);
 
-    vector<thread> workers;
-    for (int i = 0; i < threadCount; i++) {
-        workers.emplace_back(threadedDFSWorker, i, ref(visited), ref(s), ref(mtx), ref(cv), ref(done));
+    vector<thread> threads;
+    threads.reserve(threadCount);
+
+    for (int i = 0; i < threadCount; ++i) {
+        threads.emplace_back([i, stop, &graph, &visited, &s, &mtx, &cv, &done] {
+            threadedDFSWorker(i, stop, graph, visited, s, mtx, cv, done);
+        });
     }
 
-    cv.notify_all();
-
-    for (auto& worker : workers) {
-        worker.join();
+    for (auto& t : threads) {
+        t.join();
     }
 }
