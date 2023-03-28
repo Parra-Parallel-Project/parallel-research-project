@@ -33,8 +33,8 @@ void DFS::unthreadedDFS(int start,int stop, WeightedGraph& g) {
         }
 
         for (const auto& e : *g.getEdges(curr)) {
-            if (!visited[e.second]) {
-                s.push(e.second);
+            if (!visited[e.first]) {
+                s.push(e.first);
             }
         }
     }
@@ -69,8 +69,8 @@ void DFS::threadedDFSWorker(int id, int stop, WeightedGraph& graph, vector<bool>
 
             lock.lock();
             for (const auto& e : *graph.getEdges(curr)) {
-                if (!visited[e.second]) {
-                    s.push(e.second);
+                if (!visited[e.first]) {
+                    s.push(e.first);
                 }
             }
             lock.unlock();

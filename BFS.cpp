@@ -38,8 +38,8 @@ void BFS::unthreadedBFS(int start, int stop, WeightedGraph& graph) {
         }
 
         for (const auto& e : *graph.getEdges(curr)) {
-            if (!visited[e.second]) {
-                q.push(e.second);
+            if (!visited[e.first]) {
+                q.push(e.first);
             }
         }
     }
@@ -98,8 +98,8 @@ void BFS::threadedBFSWorker(int id, int stop, WeightedGraph& graph, vector<bool>
 
             lock.lock();
             for (const auto& e : *graph.getEdges(curr)) {
-                if (!visited[e.second]) {
-                    q.push(e.second);
+                if (!visited[e.first]) {
+                    q.push(e.first);
                 }
             }
             lock.unlock();
