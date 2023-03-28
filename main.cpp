@@ -15,8 +15,6 @@ using namespace std::chrono;
 
 #define MAX_WEIGHT 10
 
-// Used to test algorithms: (start, end, graph)
-
 
 // global variables that affect testing
 
@@ -24,7 +22,6 @@ using namespace std::chrono;
 static const int n_graphs = 10; // number of test problems per group
 static const int n_groups = 5; // number of groups to test
 static const int groups[] = {10, 50, 100, 1000, 10000}; // nodes used in each group
-
 // per multithreaded alg
 static const int n_thread_groups = 4; // number of different thread counts to test
 static const int thread_groups[] = {1, 2, 4, 8}; // threads to test each multithreaded solution using
@@ -55,7 +52,6 @@ int main() {
 
     cout << "\n---- | Runner Output: | ----\n\n";
 
-    // srand(0);
     srand (time(NULL));
 
     vector<vector<problem>> allProblems;
@@ -102,10 +98,7 @@ int main() {
 // generates a string in CSV format from the given times and metadata
 string toCSVString(int alg, int threadCount, arr2d times, int h, int w) {
 
-
     string csv = "";
-
-    
 
     for(int i = 0; i < h; i++) {
         for(int j = 0; j < w; j++) {
