@@ -1,6 +1,6 @@
 #include<iostream>
-#include<Vector>
-#include<List>
+#include<vector>
+#include<list>
 
 
 #ifndef WEIGHTED_GRAPH_H
