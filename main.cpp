@@ -28,7 +28,7 @@ using namespace std::chrono;
 // global variables that affect testing
 
 // per unthreaded alg
-static const int n_graphs = 10; // number of test problems per group
+static const int n_graphs = 100; // number of test problems per group
 static const int n_groups = 5; // number of groups to test
 static const int groups[] = {10, 50, 100, 1000, 10000}; // nodes used in each group
 // per multithreaded alg
