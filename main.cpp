@@ -17,6 +17,7 @@
 #include "DFS.h"
 #include "BFS.h"
 #include "Dijkstra.h"
+#include "AStar.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -218,7 +219,7 @@ arr2d testUnthreaded(int alg, vector<vector<problem>> graphs) {
 
                 case 3: // A*
 
-                    // unthreadedAStar(start, stop, graph);
+                    AStar::unthreadedAStar(start, stop, graph);
                     break;
                 default:
                     cout << "What are you doing here?\n";
@@ -273,7 +274,7 @@ arr2d testThreaded(int alg, int threadCount, vector<vector<problem>> graphs) {
 
                 case 3: // A*
 
-                    // threadedAStar(start, stop, graph, threadCount);
+                    AStar::threadedAStar(start, stop, graph, threadCount);
                     break;
                 default:
                     cout << "What are you doing here?\n";
