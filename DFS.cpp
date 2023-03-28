@@ -1,8 +1,27 @@
 
+#include <iostream>
+#include <vector>
+#include <list>
+#include <queue>
+#include <limits>
+#include <algorithm>
+#include <thread>
+#include <mutex>
+#include <stack>
+#include <condition_variable>
+#include <atomic>
+#include "DFS.h"
 
 
-void DFS::unthreadedDFS(int start,int stop, WeightedGraph& graph) {
-    vector<bool> visited(graph.getnNodes(), false);
+#ifndef WEIGHTED_GRAPH_H
+#define WEIGHTED_GRAPH_H
+#include "WeightedGraph.h"
+#endif
+
+WeightedGraph DFS::graph = WeightedGraph(0);
+
+void DFS::unthreadedDFS(int start,int stop, WeightedGraph& g) {
+    vector<bool> visited(g.getnNodes(), false);
     stack<int> s;
     s.push(start);
 
@@ -14,9 +33,9 @@ void DFS::unthreadedDFS(int start,int stop, WeightedGraph& graph) {
             visited[curr] = true;
         }
 
-        for (const auto& e : *graph.getEdges(curr)) {
-            if (!visited[e.dest]) {
-                s.push(e.dest);
+        for (const auto& e : *g.getEdges(curr)) {
+            if (!visited[e.second]) {
+                s.push(e.second);
             }
         }
     }
@@ -41,13 +60,12 @@ void DFS::threadedDFSWorker(int id, vector<bool>& visited, stack<int>& s, mutex&
         lock.unlock();
 
         if (!visited[curr]) {
-            cout << "Thread " << id << ": " << curr << endl;
             visited[curr] = true;
 
             lock.lock();
             for (const auto& e : *graph.getEdges(curr)) {
-                if (!visited[e.dest]) {
-                    s.push(e.dest);
+                if (!visited[e.second]) {
+                    s.push(e.second);
                 }
             }
             lock.unlock();
@@ -57,7 +75,8 @@ void DFS::threadedDFSWorker(int id, vector<bool>& visited, stack<int>& s, mutex&
 }
 
 
-void DFS::threadedDFS(int start, WeightedGraph& graph, int threadCount) {
+void DFS::threadedDFS(int start, int stop, WeightedGraph& g, int threadCount) {
+    graph = g;
     vector<bool> visited(graph.getnNodes(), false);
     stack<int> s;
     s.push(start);

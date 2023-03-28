@@ -2,14 +2,19 @@
 #include <stdlib.h>
 #include <time.h>
 #include <tuple>
-#include <Vector>
+#include <vector>
 #include <iomanip>
 #include <string>
 #include <chrono>
 #include <fstream>
 #include <queue>
 
+#ifndef WEIGHTED_GRAPH_H
+#define WEIGHTED_GRAPH_H
 #include "WeightedGraph.h"
+#endif
+
+#include "DFS.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -190,13 +195,13 @@ arr2d testUnthreaded(int alg, vector<vector<problem>> graphs) {
             WeightedGraph graph = get<2>(graphs[i][j]);
 
 
-            auto start = high_resolution_clock::now(); // start time
+            auto startTime = high_resolution_clock::now(); // start time
 
             switch(alg) {
 
                 case 0: // DFS
 
-                    // unthreadedDFS(start, stop, graph);
+                    DFS::unthreadedDFS(start, stop, graph);
                     break;
 
                 case 1: // BFS
@@ -217,9 +222,9 @@ arr2d testUnthreaded(int alg, vector<vector<problem>> graphs) {
                     cout << "What are you doing here?\n";
             }
 
-            auto stop = high_resolution_clock::now(); // end time
+            auto stopTime = high_resolution_clock::now(); // end time
 
-            times.a[i][j] = duration_cast<milliseconds>(stop - start).count();
+            times.a[i][j] = duration_cast<milliseconds>(stopTime - startTime).count();
         }
     }
 
@@ -243,14 +248,13 @@ arr2d testThreaded(int alg, int threadCount, vector<vector<problem>> graphs) {
             stop = get<1>(graphs[i][j]);
             WeightedGraph graph = get<2>(graphs[i][j]);
 
-
-            auto start = high_resolution_clock::now(); // start time
+            auto startTime = high_resolution_clock::now(); // start time
 
             switch(alg) {
 
                 case 0: // DFS
 
-                    // threadedDFS(start, stop, graph, threadCount);
+                    DFS::threadedDFS(start, stop, graph, threadCount);
                     break;
 
                 case 1: // BFS
@@ -271,9 +275,9 @@ arr2d testThreaded(int alg, int threadCount, vector<vector<problem>> graphs) {
                     cout << "What are you doing here?\n";
             }
 
-            auto stop = high_resolution_clock::now(); // end time
+            auto stopTime = high_resolution_clock::now(); // end time
 
-            times.a[i][j] = duration_cast<milliseconds>(stop - start).count();
+            times.a[i][j] = duration_cast<milliseconds>(stopTime - startTime).count();
         }
     }
 
