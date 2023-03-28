@@ -16,6 +16,7 @@
 
 #include "DFS.h"
 #include "BFS.h"
+#include "Dijkstra.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -212,7 +213,7 @@ arr2d testUnthreaded(int alg, vector<vector<problem>> graphs) {
 
                 case 2: // Dijkstra's
 
-                    // unthreadedDijkstra(start, stop, graph);
+                    Dijkstra::unthreadedDijkstra(start, stop, graph);
                     break;
 
                 case 3: // A*
@@ -265,7 +266,7 @@ arr2d testThreaded(int alg, int threadCount, vector<vector<problem>> graphs) {
 
                 case 2: // Dijkstra's
 
-                    // threadedDijkstra(start, stop, graph, threadCount);
+                    Dijkstra::threadedDijkstra(start, stop, graph, threadCount);
                     break;
 
                 case 3: // A*
