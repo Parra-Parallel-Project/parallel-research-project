@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stack>
 #include <vector>
 #include <list>
 #include <queue>
@@ -9,6 +10,7 @@
 #include <condition_variable>
 #include <atomic>
 #include "WeightedGraph.h"
+
 
 //write algorithms into this file
 
@@ -42,8 +44,8 @@ void unthreadedBFS(int start, int stop, WeightedGraph& graph) {
         }
 
         for (const auto& e : *graph.getEdges(curr)) {
-            if (!visited[e.dest]) {
-                q.push(e.dest);
+            if (!visited[e.second]) {
+                q.push(e.second);
             }
         }
     }
@@ -74,8 +76,8 @@ void unthreadedDFS(int start,int stop, WeightedGraph& graph) {
         }
 
         for (const auto& e : *graph.getEdges(curr)) {
-            if (!visited[e.dest]) {
-                s.push(e.dest);
+            if (!visited[e.second]) {
+                s.push(e.second);
             }
         }
     }
@@ -129,7 +131,8 @@ void unthreadedDijkstra(int start, int stop, WeightedGraph& graph) {
 	//each thread is grabbing nodes and adding neighbors, shared flag only set when a thread finds the target node
 	//threads act using a while(flag) loop so that once the target is found they stop executing
 
-void threadedBFSWorker(int id, int stop, vector<bool>& visited, queue<int>& q, mutex& mtx, condition_variable& cv, atomic<bool>& done) {
+
+void threadedBFSWorker(int id, int stop, WeightedGraph& graph, vector<bool>& visited, queue<int>& q, mutex& mtx, condition_variable& cv, atomic<bool>& done) {
     unique_lock<mutex> lock(mtx, defer_lock);
 
     while (true) {
@@ -157,8 +160,8 @@ void threadedBFSWorker(int id, int stop, vector<bool>& visited, queue<int>& q, m
 
             lock.lock();
             for (const auto& e : *graph.getEdges(curr)) {
-                if (!visited[e.dest]) {
-                    q.push(e.dest);
+                if (!visited[e.second]) {
+                    q.push(e.second);
                 }
             }
             lock.unlock();
@@ -166,7 +169,6 @@ void threadedBFSWorker(int id, int stop, vector<bool>& visited, queue<int>& q, m
         }
     }
 }
-
 void threadedBFS(int start, int stop, WeightedGraph& graph, int threadCount) {
     vector<bool> visited(graph.getnNodes(), false);
     queue<int> q;
@@ -176,24 +178,28 @@ void threadedBFS(int start, int stop, WeightedGraph& graph, int threadCount) {
     condition_variable cv;
     atomic<bool> done(false);
 
-    vector<thread> workers;
-    for (int i = 0; i < threadCount; i++) {
-        workers.emplace_back(threadedBFSWorker, i, stop, ref(visited), ref(q), ref(mtx), ref(cv), ref(done));
+    vector<thread> threads;
+    threads.reserve(threadCount);
+
+    for (int i = 0; i < threadCount; ++i) {
+        threads.emplace_back([i, stop, &graph, &visited, &q, &mtx, &cv, &done] {
+            threadedBFSWorker(i, stop, graph, visited, q, mtx, cv, done);
+        });
     }
 
-    cv.notify_all();
-
-    for (auto& worker : workers) {
-        worker.join();
+    for (auto& t : threads) {
+        t.join();
     }
 }
+
 
 //MultiDFS
 	//share visited array and flag
 	//threads spawn if there are multiple neighbors to current node and less threads active than max allowed
 	//threads die if they are in a dead end node and can't access any nodes that haven't been visited
 
-void threadedDFSWorker(int id, int stop, vector<bool>& visited, stack<int>& s, mutex& mtx, condition_variable& cv, atomic<bool>& done) {
+
+void threadedDFSWorker(int id, int stop, WeightedGraph& graph, vector<bool>& visited, stack<int>& s, mutex& mtx, condition_variable& cv, atomic<bool>& done) {
     unique_lock<mutex> lock(mtx, defer_lock);
 
     while (true) {
@@ -221,8 +227,8 @@ void threadedDFSWorker(int id, int stop, vector<bool>& visited, stack<int>& s, m
 
             lock.lock();
             for (const auto& e : *graph.getEdges(curr)) {
-                if (!visited[e.dest]) {
-                    s.push(e.dest);
+                if (!visited[e.second]) {
+                    s.push(e.second);
                 }
             }
             lock.unlock();
@@ -230,7 +236,6 @@ void threadedDFSWorker(int id, int stop, vector<bool>& visited, stack<int>& s, m
         }
     }
 }
-
 
 void threadedDFS(int start, int stop, WeightedGraph& graph, int threadCount) {
     vector<bool> visited(graph.getnNodes(), false);
@@ -241,20 +246,22 @@ void threadedDFS(int start, int stop, WeightedGraph& graph, int threadCount) {
     condition_variable cv;
     atomic<bool> done(false);
 
-    vector<thread> workers;
-    for (int i = 0; i < threadCount; i++) {
-        workers.emplace_back(threadedDFSWorker, i, stop, ref(visited), ref(s), ref(mtx), ref(cv), ref(done));
+    vector<thread> threads;
+    threads.reserve(threadCount);
+
+    for (int i = 0; i < threadCount; ++i) {
+        threads.emplace_back([i, stop, &graph, &visited, &s, &mtx, &cv, &done] {
+            threadedDFSWorker(i, stop, graph, visited, s, mtx, cv, done);
+        });
     }
 
-    cv.notify_all();
-
-    for (auto& worker : workers) {
-        worker.join();
+    for (auto& t : threads) {
+        t.join();
     }
 }
 
-//MultiDijkstra
 
+//MultiDijkstra
 void subThreadDijkstra(WeightedGraph& graph, vector<int>& dist, vector<bool>& visited, int start, int stop) {
     const int INF = std::numeric_limits<int>::max();
 
@@ -304,7 +311,7 @@ void threadedDijkstra(int start, int stop, WeightedGraph& graph, int numberThrea
         int subgraphStart = t * subgraphSize + 1;
         int subgraphStop = (t == numberThreads-1) ? graph.getnNodes() : (t+1) * subgraphSize;
 
-        threads.emplace_back(subdijkstra, std::ref(graph), std::ref(dist[t]), std::ref(visited[t]), subgraphStart, stop);
+        threads.emplace_back(subThreadDijkstra, std::ref(graph), std::ref(dist[t]), std::ref(visited[t]), subgraphStart, stop);
     }
 
     for (auto& thread : threads) {
