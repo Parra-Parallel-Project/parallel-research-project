@@ -7,6 +7,7 @@
 #include <string>
 #include <chrono>
 #include <fstream>
+#include <queue>
 
 #include "WeightedGraph.h"
 
@@ -18,7 +19,7 @@ using namespace std::chrono;
 
 // global variables that affect testing
 
-// per unthreaded alg 
+// per unthreaded alg
 static const int n_graphs = 10; // number of test problems per group
 static const int n_groups = 5; // number of groups to test
 static const int groups[] = {10, 50, 100, 1000, 10000}; // nodes used in each group
@@ -67,7 +68,7 @@ int main() {
             currentGroup.push_back(p);
         }
 
-        allProblems.push_back(currentGroup);        
+        allProblems.push_back(currentGroup);
     }
 
     // printEdgesPerProblem(allProblems); // DEBUG
@@ -78,7 +79,7 @@ int main() {
 
     for(int alg = 0; alg < nAlgs; alg++) { // do each algorithm type independently
 
-        times = testUnthreaded(alg, allProblems); // unthreaded 
+        times = testUnthreaded(alg, allProblems); // unthreaded
         // prettyPrint2d(times, n_groups, n_graphs); // DEBUG
         fp << toCSVString(alg, 0, times, n_groups, n_graphs);
 
@@ -102,7 +103,7 @@ string toCSVString(int alg, int threadCount, arr2d times, int h, int w) {
 
     for(int i = 0; i < h; i++) {
         for(int j = 0; j < w; j++) {
-            
+
             string row = "";
 
             /*
@@ -124,7 +125,7 @@ string toCSVString(int alg, int threadCount, arr2d times, int h, int w) {
 
 // generates a graph with a guaranteed path b/w the start and stop nodes, and stores all of that in a problem struct
 problem generateNewProblem(int n) {
-    
+
     WeightedGraph g = WeightedGraph(n);
 
     int maxEdges = n * (n - 1); // maximum number of edges in an undirected, fuully connected graph
@@ -157,7 +158,7 @@ problem generateNewProblem(int n) {
     }
 
     // attempt to add more random edges until up to nEdges
-    for(; edges < nEdges; edges++) { 
+    for(; edges < nEdges; edges++) {
 
         e1 = rand() % n;
         e2 = rand() % n;
@@ -175,7 +176,7 @@ problem generateNewProblem(int n) {
 arr2d testUnthreaded(int alg, vector<vector<problem>> graphs) {
 
     cout << "Running tests for unthreaded " << algNames[alg] << "\n";
-    
+
     arr2d times; // times for unthreaded solutions
 
     int start, stop;
@@ -187,30 +188,30 @@ arr2d testUnthreaded(int alg, vector<vector<problem>> graphs) {
             start = get<0>(graphs[i][j]);
             stop = get<1>(graphs[i][j]);
             WeightedGraph graph = get<2>(graphs[i][j]);
-            
+
 
             auto start = high_resolution_clock::now(); // start time
-            
+
             switch(alg) {
 
                 case 0: // DFS
-                    
-                    // unthreadedDFS(start, stop, graph); 
+
+                    // unthreadedDFS(start, stop, graph);
                     break;
 
                 case 1: // BFS
 
-                    // unthreadedBFS(start, stop, graph); 
+                    // unthreadedBFS(start, stop, graph);
                     break;
 
                 case 2: // Dijkstra's
 
-                    // unthreadedDijkstra(start, stop, graph); 
+                    // unthreadedDijkstra(start, stop, graph);
                     break;
 
                 case 3: // A*
 
-                    // unthreadedAStar(start, stop, graph); 
+                    // unthreadedAStar(start, stop, graph);
                     break;
                 default:
                     cout << "What are you doing here?\n";
@@ -229,7 +230,7 @@ arr2d testUnthreaded(int alg, vector<vector<problem>> graphs) {
 arr2d testThreaded(int alg, int threadCount, vector<vector<problem>> graphs) {
 
     cout << "Running tests for threaded " << algNames[alg] << " using " << threadCount << " threads\n";
-    
+
     arr2d times; // times for threaded solutions
 
     int start, stop;
@@ -241,30 +242,30 @@ arr2d testThreaded(int alg, int threadCount, vector<vector<problem>> graphs) {
             start = get<0>(graphs[i][j]);
             stop = get<1>(graphs[i][j]);
             WeightedGraph graph = get<2>(graphs[i][j]);
-            
+
 
             auto start = high_resolution_clock::now(); // start time
-            
+
             switch(alg) {
 
                 case 0: // DFS
-                    
-                    // threadedDFS(start, stop, graph, threadCount); 
+
+                    // threadedDFS(start, stop, graph, threadCount);
                     break;
 
                 case 1: // BFS
 
-                    // threadedBFS(start, stop, graph, threadCount); 
+                    // threadedBFS(start, stop, graph, threadCount);
                     break;
 
                 case 2: // Dijkstra's
 
-                    // threadedDijkstra(start, stop, graph, threadCount); 
+                    // threadedDijkstra(start, stop, graph, threadCount);
                     break;
 
                 case 3: // A*
 
-                    // threadedAStar(start, stop, graph, threadCount); 
+                    // threadedAStar(start, stop, graph, threadCount);
                     break;
                 default:
                     cout << "What are you doing here?\n";
@@ -279,7 +280,7 @@ arr2d testThreaded(int alg, int threadCount, vector<vector<problem>> graphs) {
     return times;
 }
 
-// print out info about each generated problem in the array 
+// print out info about each generated problem in the array
 void printEdgesPerProblem(vector<vector<problem>> arr) {
 
     for(auto group : arr) {
@@ -297,7 +298,7 @@ void prettyPrint2d(arr2d arr, int height, int width) {
 
     for(int i = 0; i < height; i++) {
 
-        cout << "\n\tNodes: " << groups[i] << "\n\t\t"; 
+        cout << "\n\tNodes: " << groups[i] << "\n\t\t";
 
         for(int j = 0; j < width; j++) {
 
