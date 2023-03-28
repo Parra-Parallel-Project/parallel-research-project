@@ -311,7 +311,7 @@ void threadedDijkstra(int start, int stop, WeightedGraph& graph, int numberThrea
         int subgraphStart = t * subgraphSize + 1;
         int subgraphStop = (t == numberThreads-1) ? graph.getnNodes() : (t+1) * subgraphSize;
 
-        threads.emplace_back(subdijkstra, std::ref(graph), std::ref(dist[t]), std::ref(visited[t]), subgraphStart, stop);
+        threads.emplace_back(subThreadDijkstra, std::ref(graph), std::ref(dist[t]), std::ref(visited[t]), subgraphStart, stop);
     }
 
     for (auto& thread : threads) {
