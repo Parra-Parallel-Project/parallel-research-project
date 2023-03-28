@@ -246,6 +246,8 @@ arr2d testThreaded(int alg, int threadCount, vector<vector<problem>> graphs) {
 
         for(int j = 0; j < n_graphs; j++) {
 
+            // cout << j << " "; // DEBUG
+
             start = get<0>(graphs[i][j]);
             stop = get<1>(graphs[i][j]);
             WeightedGraph graph = get<2>(graphs[i][j]);
