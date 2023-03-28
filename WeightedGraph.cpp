@@ -1,7 +1,12 @@
 #include<iostream>
 #include<Vector>
 #include<List>
+
+
+#ifndef WEIGHTED_GRAPH_H
+#define WEIGHTED_GRAPH_H
 #include "WeightedGraph.h"
+
 
 using namespace std;
 
@@ -66,3 +71,6 @@ void WeightedGraph::prettyPrint() {
         cout << "\n";
     }
 }
+
+
+#endif
