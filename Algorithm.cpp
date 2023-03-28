@@ -11,6 +11,31 @@
 	//loop function
 		//is this the target node?
 		//cycle through list received from getEdges and add it to the queue if node hasn't been visited
+void unthreadedBFS(int start, int stop, WeightedGraph& graph) {
+    vector<bool> visited(graph.getnNodes(), false);
+    queue<int> q;
+    q.push(start);
+
+    while (!q.empty()) {
+        int curr = q.front();
+        q.pop();
+
+        if (curr == stop) {
+            break;
+        }
+
+
+        if (!visited[curr]) {
+            visited[curr] = true;
+        }
+
+        for (const auto& e : *graph.getEdges(curr)) {
+            if (!visited[e.dest]) {
+                q.push(e.dest);
+            }
+        }
+    }
+}
 
 //SingleDFS
 	//create a boolean visitedArray
@@ -28,6 +53,9 @@ void unthreadedDFS(int start,int stop, WeightedGraph& graph) {
     while (!s.empty()) {
         int curr = s.top();
         s.pop();
+        if (curr == stop) {
+            return;
+        }
 
         if (!visited[curr]) {
             visited[curr] = true;
@@ -89,6 +117,7 @@ void unthreadedDijkstra(int start, int stop, WeightedGraph& graph) {
 	//each thread is grabbing nodes and adding neighbors, shared flag only set when a thread finds the target node
 	//threads act using a while(flag) loop so that once the target is found they stop executing
 
+
 //MultiDFS
 	//share visited array and flag
 	//threads spawn if there are multiple neighbors to current node and less threads active than max allowed
@@ -112,7 +141,6 @@ void threadedDFSWorker(int id, vector<bool>& visited, stack<int>& s, mutex& mtx,
         lock.unlock();
 
         if (!visited[curr]) {
-            cout << "Thread " << id << ": " << curr << endl;
             visited[curr] = true;
 
             lock.lock();
