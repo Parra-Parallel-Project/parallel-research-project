@@ -227,7 +227,7 @@ arr2d testUnthreaded(int alg, vector<vector<problem>> graphs) {
 
             auto stopTime = high_resolution_clock::now(); // end time
 
-            times.a[i][j] = duration_cast<milliseconds>(stopTime - startTime).count();
+            times.a[i][j] = duration_cast<microseconds>(stopTime - startTime).count();
         }
     }
 
@@ -282,7 +282,7 @@ arr2d testThreaded(int alg, int threadCount, vector<vector<problem>> graphs) {
 
             auto stopTime = high_resolution_clock::now(); // end time
 
-            times.a[i][j] = duration_cast<milliseconds>(stopTime - startTime).count();
+            times.a[i][j] = duration_cast<microseconds>(stopTime - startTime).count();
         }
     }
 
